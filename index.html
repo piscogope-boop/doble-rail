@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Método para estudiar dos idiomas en paralelo: los dos todos los días, separados por un corte real, con un solo motor cada vez.">
+<meta name="theme-color" content="#F1F3F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10131A" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Doble Raíl">
+<title>Doble Raíl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Libre+Franklin:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#F1F3F7; --surface:#FFFFFF; --surface-2:#E8EBF2;
+  --ink:#161A23; --ink-2:#454C5C; --ink-3:#727A8C;
+  --line:#D2D7E2; --line-soft:#E2E6EE;
+  --a:#256B84; --a-ink:#1B4F61;
+  --b:#7C3B58; --b-ink:#5E2B42;
+  --warn:#8A5A16;
+  --shadow:0 1px 2px rgba(22,26,35,.05), 0 4px 14px rgba(22,26,35,.04);
+  --r:8px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#10131A; --surface:#171B24; --surface-2:#1F2430;
+    --ink:#E7EAF1; --ink-2:#B0B7C6; --ink-3:#828B9D;
+    --line:#2C3340; --line-soft:#232935;
+    --a:#66AEC5; --a-ink:#9BCEDF;
+    --b:#CE8FA8; --b-ink:#E4B3C5;
+    --warn:#D6A45C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#10131A; --surface:#171B24; --surface-2:#1F2430;
+  --ink:#E7EAF1; --ink-2:#B0B7C6; --ink-3:#828B9D;
+  --line:#2C3340; --line-soft:#232935;
+  --a:#66AEC5; --a-ink:#9BCEDF;
+  --b:#CE8FA8; --b-ink:#E4B3C5;
+  --warn:#D6A45C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.28);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Libre Franklin",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 22px 64px}
+h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;text-wrap:balance;margin:0;line-height:1.15}
+p{margin:0}
+a{color:var(--a)}
+code{font-family:"IBM Plex Mono",monospace;font-size:.87em;background:var(--surface-2);border:1px solid var(--line-soft);padding:0 4px;border-radius:3px}
+b{font-weight:600}
+
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+header{padding:44px 0 26px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(34px,6vw,52px);font-weight:700;letter-spacing:-.02em;margin-top:10px}
+.lede{margin-top:12px;max-width:60ch;color:var(--ink-2);font-size:16px;font-weight:300}
+
+section{padding-top:38px}
+h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:6px 0 16px}
+
+.box{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--line-soft);font-size:13.5px;vertical-align:top}
+thead th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:none}
+td.k{font-weight:600;white-space:nowrap}
+tr.dim td{background:var(--surface-2);color:var(--ink-2)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.dot.a{background:var(--a)} .dot.b{background:var(--b)}
+.mant{color:var(--ink-3)}
+
+.rails{display:grid;grid-template-columns:1fr;gap:0}
+.rail{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:20px;box-shadow:var(--shadow)}
+.rail.ra{border-top:3px solid var(--a)}
+.rail.rb{border-top:3px solid var(--b)}
+.rh{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:2px}
+.rh h3{font-size:19px;font-weight:600}
+.rh span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+.rsub{font-size:12.5px;color:var(--ink-3);font-weight:300;margin-bottom:12px}
+.mode+.mode{margin-top:18px}
+.mode h4{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:600;margin:0 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.rail.ra .mode h4{color:var(--a-ink)}
+.rail.rb .mode h4{color:var(--b-ink)}
+.mode ul{list-style:none;margin:0;padding:0}
+.mode li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.mode li:last-child{border-bottom:none}
+.dur{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;color:var(--ink-3);flex:none;width:46px;padding-top:2px;font-variant-numeric:tabular-nums}
+.it{font-size:13.5px;line-height:1.45}
+.it em{display:block;font-style:normal;color:var(--ink-2);font-size:12.5px;margin-top:3px;line-height:1.45;font-weight:300}
+.it .done{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.03em}
+
+.gap{position:relative;padding:22px 0;text-align:center}
+.gap::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:repeating-linear-gradient(to bottom,var(--line) 0 5px,transparent 5px 11px)}
+.gaplabel{position:relative;display:inline-block;background:var(--ground);padding:6px 14px;border:1px solid var(--line);border-radius:100px;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);font-weight:500}
+
+.note{margin-top:10px;font-size:13px;color:var(--ink-3);font-weight:300;max-width:74ch}
+.note b{color:var(--ink-2)}
+.callout{border-left:3px solid var(--warn);background:var(--surface);border-radius:0 var(--r) var(--r) 0;padding:14px 18px;margin-top:14px;font-size:13.5px;color:var(--ink-2);font-weight:300}
+.callout b{color:var(--ink)}
+
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);color:var(--ink-3);font-size:12.5px;font-weight:300}
+footer a{color:var(--ink-2)}
+footer p+p{margin-top:7px}
+
+@media (min-width:880px){
+  .rails{grid-template-columns:1fr auto 1fr}
+  .gap{padding:0 20px;align-self:stretch;display:flex;align-items:center}
+  .gaplabel{writing-mode:vertical-rl;text-orientation:mixed;padding:16px 6px}
+}
+:focus-visible{outline:2px solid var(--a);outline-offset:3px;border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Método para estudiar dos idiomas en paralelo</div>
+  <h1>Doble Raíl</h1>
+  <p class="lede">Los dos idiomas todos los días, separados por un corte real, con un solo motor cada vez. Pensado para quien lleva un idioma desde cero y otro ya empezado, con unas 4 horas diarias.</p>
+</header>
+
+<section>
+  <div class="eyebrow">La pregunta de siempre</div>
+  <h2>¿Días enteros dedicados a un solo idioma?</h2>
+  <div class="box">
+    <table>
+      <tbody>
+        <tr><td class="k">Lo que ganas concentrando</td><td>Continuidad temática: no arrancar de frío cada sesión, y no abrir dos frentes de material nuevo a la vez.</td></tr>
+        <tr><td class="k">Por qué no dejarlo a cero</td><td>En A0-A2 la retención depende de la <b>frecuencia de contacto</b> más que de la duración. Tres días sin tocarlo no es una pausa, es reaprendizaje.</td></tr>
+        <tr><td class="k">El riesgo real</td><td>Un calendario con días libres de un idioma es frágil: el día libre se convierte en semana libre.</td></tr>
+        <tr><td class="k">La solución</td><td>Rota el <b>papel</b> de cada idioma, no su presencia. Los dos aparecen los siete días.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">La semana</div>
+  <h2>Quién es motor y quién mantenimiento</h2>
+  <div class="box">
+    <table>
+      <thead><tr><th>Día</th><th>Motor · material nuevo</th><th>Mantenimiento · repaso e input</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Lun · Mar</td><td><b><span class="dot a"></span>Idioma desde cero</b></td><td class="mant"><span class="dot b"></span>Idioma intermedio</td></tr>
+        <tr><td class="k">Mié · Jue</td><td><b><span class="dot b"></span>Idioma intermedio</b></td><td class="mant"><span class="dot a"></span>Idioma desde cero</td></tr>
+        <tr><td class="k">Vie · Sáb</td><td><b><span class="dot a"></span>Idioma desde cero</b></td><td class="mant"><span class="dot b"></span>Idioma intermedio</td></tr>
+        <tr class="dim"><td class="k">Domingo</td><td colspan="2">Los dos en ligero · examen de cada uno + ajuste de la semana</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Motor</b> = abres tema nuevo el primer día del par y lo cierras el segundo. <b>Mantenimiento</b> = cero material nuevo, solo sostener lo que ya hay. <b>Cuatro días para el idioma nuevo contra dos para el otro</b>: el idioma que ya manejas suele recibir horas fuera de la rutina (series, lectura, ocio) que el nuevo no recibe, y un idioma solo puede estar en mantenimiento si <b>ya tiene base</b>. Si los dos están en niveles parecidos, reparte 3 y 3.</p>
+</section>
+
+<section>
+  <div class="eyebrow">El día · qué haces exactamente</div>
+  <h2>Dos raíles y un corte en medio</h2>
+  <div class="rails">
+
+    <div class="rail ra">
+      <div class="rh"><h3>Idioma desde cero</h3><span>~80 % ACTIVO</span></div>
+      <p class="rsub">A0-A2 · fase de despegue</p>
+
+      <div class="mode">
+        <h4>Motor · 2 h 10</h4>
+        <ul>
+          <li><span class="dur">50 min</span><div class="it">Clase o estudio guiado
+            <em>Tema nuevo con ejemplos, no con teoría larga. Hablas tú la mayor parte del tiempo y alguien —profesor, tutor, IA— corrige en el momento y apunta los fallos. Si compartes familia lingüística con el idioma, pide la explicación <b>por contraste con la lengua que ya tienes</b>: rinde más que la regla suelta.</em>
+            <span class="done">HECHO CUANDO: has producido el tema nuevo sin ayuda 3 veces</span></div></li>
+
+          <li><span class="dur">5 min</span><div class="it">De pie, sin pantalla
+            <em>Levantarte y moverte. Nada de móvil: sentado mirando una pantalla no recuperas atención, solo cambias de estímulo.</em></div></li>
+
+          <li><span class="dur">40 min</span><div class="it">Consolidación en voz alta
+            <em>Cierras los apuntes y reproduces en alto lo de la clase: frases, conjugaciones, ejemplos. <b>En voz alta de verdad</b>, no mentalmente — leer por encima da una sensación de saber que es falsa. Cuando te atasques, miras, cierras y repites desde el principio.</em>
+            <span class="done">HECHO CUANDO: una pasada entera sin abrir los apuntes</span></div></li>
+
+          <li><span class="dur">15 min</span><div class="it">Repaso espaciado · con feedback
+            <em>Anki o similar, solo tu mazo de errores, en dirección lengua materna → idioma que aprendes. Dices la respuesta <b>en voz alta antes</b> de girar la tarjeta. Si fallas, lees la solución entera antes de pasar. Al agotarse los minutos paras, aunque queden tarjetas.</em></div></li>
+
+          <li><span class="dur">25 min</span><div class="it">Audio graduado con transcripción
+            <em>Método tipo Assimil o audio A1 lento, siempre con el texto delante. <b>Nada de series ni podcasts auténticos todavía</b>: en A0 no entiendes lo suficiente para que enseñen nada. Escuchas, sigues el texto, repites imitando el ritmo. Puede ir en un hueco del día.</em></div></li>
+        </ul>
+      </div>
+
+      <div class="mode">
+        <h4>Mantenimiento · 2 h</h4>
+        <ul>
+          <li><span class="dur">20 min</span><div class="it">Repaso espaciado · con feedback
+            <em>Igual que en motor, con unos minutos más porque hoy no hay clase.</em></div></li>
+
+          <li><span class="dur">35 min</span><div class="it">Recuperar lo del día motor
+            <em>Sin mirar nada, escribes o dices todo lo que recuerdes del último día motor: reglas, ejemplos, vocabulario. <b>Primero lo sacas, después compruebas.</b> Ese orden es lo que hace que funcione: si abres los apuntes antes, es releer, y releer rinde mucho menos.</em>
+            <span class="done">HECHO CUANDO: has comprobado y marcado lo que fallaste</span></div></li>
+
+          <li><span class="dur">35 min</span><div class="it">Material graduado a tu nivel
+            <em>Texto o audio guionizado, con transcripción. Prueba para saber si vale: si paras a buscar palabras cada dos frases, es demasiado difícil, baja de nivel. Parada cada 5 min a decir una frase de resumen en el idioma.</em></div></li>
+
+          <li><span class="dur">30 min</span><div class="it">Frases nuevas con lo que ya sabes
+            <em>Combinas tu vocabulario mínimo en frases que nunca has dicho. No traduces frases que te den: <b>las inventas tú</b>. Es lo que convierte vocabulario reconocido en vocabulario usable. Las dudosas, que te las corrija alguien.</em>
+            <span class="done">HECHO CUANDO: 15-20 frases propias escritas o grabadas</span></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="gap"><span class="gaplabel">Corte real · mín. 2 h</span></div>
+
+    <div class="rail rb">
+      <div class="rh"><h3>Idioma intermedio</h3><span>~50 % ACTIVO</span></div>
+      <p class="rsub">B1-B2 · fase de automatización</p>
+
+      <div class="mode">
+        <h4>Motor · 2 h 10</h4>
+        <ul>
+          <li><span class="dur">50 min</span><div class="it">Producción cronometrada
+            <em>Alguien te da una frase en tu lengua y tienes ~10 segundos para soltarla en el idioma. <b>Contra reloj y sin reformular</b>: nada de «espera, mejor así». Rondas seguidas, con corrección al vuelo. Si te paras a construirla mentalmente, no cuenta. En esta fase los fallos son de automatización, no de desconocimiento: la explicación larga es tiempo tirado.</em>
+            <span class="done">HECHO CUANDO: 30+ frases producidas bajo reloj</span></div></li>
+
+          <li><span class="dur">5 min</span><div class="it">De pie, sin pantalla
+            <em>Igual que en el otro raíl. Corto, pero corta de verdad.</em></div></li>
+
+          <li><span class="dur">40 min</span><div class="it">Reescribir tus propios errores
+            <em>Coges los fallos del bloque anterior y escribes <b>frases nuevas</b> con la estructura corregida. No copias la frase arreglada: la reutilizas en contextos distintos, tres o cuatro variantes por error. Aquí sí puedes ir lento y pensar.</em>
+            <span class="done">HECHO CUANDO: cada error del día tiene 3 frases nuevas</span></div></li>
+
+          <li><span class="dur">15 min</span><div class="it">Repaso espaciado · con feedback
+            <em>Solo mazos de errores propios y de expresiones nativas recogidas del input. Nada descargado: el material de terceros enseña con frecuencia lengua incorrecta o poco natural.</em></div></li>
+
+          <li><span class="dur">25 min</span><div class="it">Lectura extensiva
+            <em>Libro que entiendas al 95-98 % <b>sin diccionario</b>. La prueba: si en una página hay más de 2-3 palabras que te frenan, es demasiado difícil. No pares a buscar nada — el objetivo es volumen y fluidez, no vocabulario nuevo.</em></div></li>
+        </ul>
+      </div>
+
+      <div class="mode">
+        <h4>Mantenimiento · 2 h</h4>
+        <ul>
+          <li><span class="dur">15 min</span><div class="it">Repaso espaciado · con feedback
+            <em>Igual que en motor.</em></div></li>
+
+          <li><span class="dur">45 min</span><div class="it">Input activo · checkpoint cada 5 min
+            <em>Serie, vídeo o podcast, pero <b>parando cada 5 min</b> a decir en voz alta una frase de lo que acaba de pasar. Sin esa parada la mente se va y el contador sigue: es la diferencia entre 2 h de input y 2 h delante del input. Vas cazando expresiones nativas para el mazo.</em>
+            <span class="done">HECHO CUANDO: 3-5 expresiones nuevas añadidas al mazo</span></div></li>
+
+          <li><span class="dur">20 min</span><div class="it">Resumen hablado · grabado
+            <em>Cuentas en el idioma lo que has visto, <b>grabándote</b>. Luego te escuchas. Es la única forma de oír tus propios calcos de la lengua materna: mientras hablas no los notas. Lo que detectes va a la lista de errores.</em>
+            <span class="done">HECHO CUANDO: te has escuchado la grabación entera</span></div></li>
+
+          <li><span class="dur">40 min</span><div class="it">Ocio en el idioma
+            <em>Lo que ya harías igualmente. Aquí sí vale el modo pasivo y sin checkpoints: es el bloque que no debe costarte esfuerzo.</em></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <p class="note">Horario fijo, contenido rotatorio: el mismo idioma siempre a la misma hora, cambiando solo si hoy va en motor o mantenimiento. Decidir cada día consume recursos que necesitas para estudiar. Son unas <b>3 h 10 de silla real</b>; el audio graduado y el ocio ruedan con tu día.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Activo y pasivo</div>
+  <h2>El reparto no es igual en los dos</h2>
+  <div class="box">
+    <table>
+      <thead><tr><th></th><th>Diagnóstico</th><th>Consecuencia</th></tr></thead>
+      <tbody>
+        <tr><td class="k" style="color:var(--a-ink)">Desde cero<br>80 % activo</td><td>Para que el input enseñe hace falta entender el <b>95-98 %</b> del vocabulario. En A0 no llegas ni al 20 %, y cada encuentro con una palabra desconocida en contexto solo aporta un 5-10 % de su significado.</td><td><b>Nada de series ni podcasts auténticos todavía.</b> Solo material graduado, hasta tener ~1.000-2.000 palabras frecuentes.</td></tr>
+        <tr><td class="k" style="color:var(--b-ink)">Intermedio<br>50 % activo</td><td>Años de input comprensible y siguen los mismos errores fosilizados. Es el fenómeno que llevó a Swain a formular la hipótesis del output.</td><td><b>Más input no arregla eso.</b> Solo producir y que te corrijan.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Activo</b> = produces tú: hablar, escribir, recuperar de memoria. <b>Pasivo</b> = recibes: leer, escuchar, ver. Tu vocabulario pasivo siempre será mayor que el activo y está bien — el objetivo es hacer <b>productivas las 2.000-3.000 palabras más frecuentes</b> y dejar que el resto crezca en pasivo.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Innegociables</div>
+  <h2>Seis reglas</h2>
+  <div class="box">
+    <table>
+      <tbody>
+        <tr><td class="k">1 · El corte</td><td>Nunca termines un idioma y empieces el otro seguido. Comida, trabajo o ejercicio en medio. 2 h basta; en apuros, 45 min de corte real. Es la regla con más respaldo de todas.</td></tr>
+        <tr><td class="k">2 · Repaso espaciado</td><td>Tope de <b>minutos</b>, no de tarjetas: cuando se acaba el tiempo, paras. No crees mazos nuevos mientras tengas mazos sin estrenar. Solo tarjetas propias, en dirección <b>de producción</b> (tu lengua → la que aprendes); al revés mides reconocimiento y te da una lectura inflada del nivel.</td></tr>
+        <tr><td class="k">3 · Feedback</td><td>Fallar una tarjeta y pasar de largo rinde <b>menos que releer</b>. Lee la respuesta entera antes de seguir. El beneficio de recuperar depende de que compruebes.</td></tr>
+        <tr><td class="k">4 · Checkpoint</td><td>Todo input pasivo, parada cada 5 min a producir algo: una frase en voz alta, un esquema. Es la diferencia entre 2 h de input y 2 h delante del input.</td></tr>
+        <tr><td class="k">5 · Interferencias</td><td>Cuando mezcles los idiomas, <b>nombra la lengua de origen</b>. Tu segunda lengua contamina la tercera más que la materna. Señalar la fuente exacta rinde más que repetir la regla.</td></tr>
+        <tr><td class="k">6 · Días malos</td><td>Recorta material nuevo, <b>jamás el repaso</b>. Mínimo viable: 10 min de repaso por idioma + algo de input. Cuenta como día cumplido — romper la cadena cuesta más que el contenido perdido.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><b>Domingo · examen y auditoría.</b> Media hora por idioma de examen real, con nota anotada para poder compararla. Después revisa las <b>cuatro hebras de Nation</b>, un cuarto del tiempo semanal a cada una: input con significado · <b>output con significado</b> · estudio de la lengua · desarrollo de la fluidez. El desequilibrio típico del autodidacta es siempre el mismo: sobra la tercera y falta la segunda. Y responde <b>«NO SÉ»</b> explícito cuando no sepas algo: un hueco en blanco no da información y falsea la medición.</div>
+</section>
+
+<section>
+  <div class="eyebrow">Procedencia</div>
+  <h2>Qué es evidencia y qué es criterio</h2>
+  <div class="box">
+    <table>
+      <thead><tr><th>Pieza</th><th>Fuente</th><th>Solidez</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Espaciar &gt; amontonar</td><td>Cepeda et al. 2008 · 1.350 sujetos, un año</td><td><b>Alta</b></td></tr>
+        <tr><td class="k">Producir, no solo recibir</td><td>Swain, hipótesis del output</td><td><b>Alta</b></td></tr>
+        <tr><td class="k">Recuperar &gt; releer, con feedback</td><td>Testing effect · 217 estudios</td><td><b>Alta</b></td></tr>
+        <tr><td class="k">Umbral 95-98 % del input</td><td>Metaanálisis de lectura extensiva 2025</td><td><b>Alta</b></td></tr>
+        <tr><td class="k">Separar los dos idiomas en el día</td><td>Libersky et al. 2025</td><td>Media · era vocabulario en laboratorio</td></tr>
+        <tr><td class="k">El principiante quiere bloques limpios</td><td>Hwang 2025</td><td>Media · adolescentes de bajo rendimiento</td></tr>
+        <tr><td class="k">Descansos breves</td><td>Ariga &amp; Lleras 2011</td><td>Media-baja · <b>no se replicó</b></td></tr>
+        <tr><td class="k">El idioma nuevo por la mañana</td><td>Efectos de hora del día</td><td><b>Baja</b> · evidencia mixta. Vale más el horario fijo que la hora</td></tr>
+        <tr class="dim"><td class="k">Bloques de 50 min · 5 de descanso · 15 de repaso</td><td>Criterio del autor</td><td><b>Ninguna.</b> No hay duración de sesión óptima demostrada; los 25 min del Pomodoro tampoco salen de ningún estudio</td></tr>
+        <tr class="dim"><td class="k">La rejilla semanal 4 / 2</td><td>Criterio del autor + práctica habitual entre políglotas</td><td><b>Ninguna</b> en sentido experimental</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Lo que más determina el resultado está arriba: producir, espaciar, comprobar lo que fallas, no engañarte con input que no entiendes. Lo de abajo es diseño, y se puede cambiar sin romper nada.</p>
+</section>
+
+<footer>
+  <p><b>Fuentes.</b> <a href="https://laplab.ucsd.edu/articles/Cepeda%20et%20al%202008_psychsci.pdf">Cepeda et al. 2008</a> · <a href="https://journals.sagepub.com/doi/10.1177/02676583251338768">Libersky et al. 2025</a> · <a href="https://onlinelibrary.wiley.com/doi/10.1111/lang.12659">Hwang 2025</a> · <a href="https://link.springer.com/article/10.1007/s10648-025-10068-6">Metaanálisis de lectura extensiva 2025</a> · <a href="https://www.sciencedirect.com/science/article/abs/pii/S0010027710002994">Ariga &amp; Lleras 2011</a> (<a href="https://www.researchgate.net/publication/221715559_Brief_mental_breaks_and_content-free_cues_may_not_keep_you_focused">no replicado</a>) · <a href="https://bera-journals.onlinelibrary.wiley.com/doi/10.1002/rev3.3266">Revisión de interleaving 2021</a> · <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1636777/full">Crítica a Krashen 2025</a> · <a href="https://www.tandfonline.com/doi/full/10.1080/14790718.2020.1779726">L2 y L3 a la vez</a> · <a href="https://www.hackingchinese.com/analyse-and-balance-your-chinese-learning-with-paul-nations-four-strands/">Las cuatro hebras de Nation</a></p>
+  <p>Se instala como app: en el menú del navegador, «Añadir a pantalla de inicio». Funciona sin conexión. Licencia CC BY 4.0.</p>
+</footer>
+
+</div>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
